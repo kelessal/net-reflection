@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Salih Keleş</Authors>
+    <Company>Salih Keleş</Company>
+    <Description>Simple but handful reflection extensions</Description>
+    <Copyright>@2019 Salih Keleş</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Net.Extensions" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>
