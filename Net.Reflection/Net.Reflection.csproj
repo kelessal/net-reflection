@@ -6,6 +6,10 @@
     <Company>Salih Keleş</Company>
     <Description>Simple but handful reflection extensions</Description>
     <Copyright>@2019 Salih Keleş</Copyright>
+    <PackageLicenseUrl>https://github.com/kelessal/net-reflection/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/kelessal/net-reflection</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/kelessal/net-reflection/blob/master/images/infinity.png</PackageIconUrl>
+    <PackageTags>reflection</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
