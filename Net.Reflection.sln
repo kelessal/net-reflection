@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Reflection", "Net.Reflection\Net.Reflection.csproj", "{604B66D2-2954-48E9-960D-E0D64471908E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Reflection", "Net.Reflection\Net.Reflection.csproj", "{604B66D2-2954-48E9-960D-E0D64471908E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Reflection.Test", "Net.Reflection.Test\Net.Reflection.Test.csproj", "{778839AE-F58E-484B-9034-663A31EED41E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{604B66D2-2954-48E9-960D-E0D64471908E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{604B66D2-2954-48E9-960D-E0D64471908E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{604B66D2-2954-48E9-960D-E0D64471908E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{778839AE-F58E-484B-9034-663A31EED41E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{778839AE-F58E-484B-9034-663A31EED41E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{778839AE-F58E-484B-9034-663A31EED41E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{778839AE-F58E-484B-9034-663A31EED41E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

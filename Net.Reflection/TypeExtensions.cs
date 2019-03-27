@@ -159,6 +159,65 @@ namespace Net.Reflection
             if (type.GetGenericArguments().Length > 1) return null;
             return type.GetGenericArguments()[0];
         }
+
+        public static Dictionary<string,object> ConvertToDictionary(this object obj,Func<TypePropertyInfo,bool> filter=null)
+        {
+            if (obj == null) return null;
+            var result = new Dictionary<string, object>();
+            Dictionary<string, object> nameValues = new Dictionary<string, object>();
+            if (obj is Dictionary<string, object>)
+                nameValues = obj as Dictionary<string, object>;
+            else
+            {
+                var info = obj.GetType().GetInfo();
+                if (info.Kind != TypeKind.Complex) return null;
+                var props = info.GetAllProperties();
+                if (filter != null)
+                    props.Where(p => filter(p));
+                nameValues = new Dictionary<string, object>();
+                props.Foreach(p=>nameValues.Add(p.Name,p.GetValue(obj)));
+            }
+          
+            foreach (var prop in nameValues)
+            {
+                var name = prop.Key;
+                var value = prop.Value;
+                if (value == null)
+                {
+                    result.Add(name, null);
+                    continue;
+                }
+                var info = value.GetType().GetInfo();
+                if(value is Dictionary<string, object>)
+                {
+                    result.Add(name, value.ConvertToDictionary(filter));
+                }
+                switch (info.Kind)
+                {
+                    case TypeKind.Unknown:
+                    case TypeKind.Primitive:
+                        result.Add(name, value);
+                        continue;
+                    case TypeKind.Complex:
+                        result.Add(name, value.ConvertToDictionary(filter));
+                        continue;
+                    case TypeKind.Collection:
+                        if (info.IsPrimitiveCollection) {
+                            result.Add(name, value);
+                            continue;
+                        }
+                        var list = new List<object>();
+                        foreach(var subValue in value as IEnumerable)
+                        {
+                            list.Add(value.ConvertToDictionary(filter));
+                        }
+                        result.Add(name, list);
+                        continue;
+                }
+            }
+
+            return result;
+        }
         
         public static MethodInfo FindMethod(this Type type, string methodName, Func<MethodInfo, bool> finder, params Type[] genericParameters)
         {

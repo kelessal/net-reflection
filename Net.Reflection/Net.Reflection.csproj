@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/kelessal/net-reflection</PackageProjectUrl>
     <PackageIconUrl>https://github.com/kelessal/net-reflection/blob/master/images/infinity.png</PackageIconUrl>
     <PackageTags>reflection</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
