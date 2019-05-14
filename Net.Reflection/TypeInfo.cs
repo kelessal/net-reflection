@@ -89,7 +89,7 @@ namespace Net.Reflection
         {
             foreach (var propInfo in this.Type.FindProperties())
             {
-                this._allProperties[propInfo.Name] = TypePropertyInfo.Create(propInfo, workingTypes);
+                this._allProperties[propInfo.Name] = TypePropertyInfo.Create(this,propInfo, workingTypes);
             }
         }
 

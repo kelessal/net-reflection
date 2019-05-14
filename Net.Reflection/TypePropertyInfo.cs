@@ -25,9 +25,11 @@ namespace Net.Reflection
         }
         public TypeInfo ElementTypeInfo => this._propertyTypeInfo.ElementTypeInfo;
         public bool IsPrimitiveCollection => this._propertyTypeInfo.IsPrimitiveCollection;
-        private TypePropertyInfo(PropertyInfo property)
+        public TypeInfo ParentInfo { get; private set; }
+        private TypePropertyInfo(TypeInfo parentInfo,PropertyInfo property)
         {
             this._property = property;
+            this.ParentInfo = parentInfo;
             
         }
         private void ParseAttributes()
@@ -62,7 +64,7 @@ namespace Net.Reflection
         public IEnumerable<T> GetAllAttributes<T>()
             where T:Attribute
         {
-            if (this._attributes.ContainsKey(typeof(T))) yield break;
+            if (!this._attributes.ContainsKey(typeof(T))) yield break;
             foreach (var item in this._attributes[typeof(T)])
                 yield return (T) item;
         }
@@ -98,9 +100,9 @@ namespace Net.Reflection
         }
         public T GetValue<T>(object obj) => (T) this.GetValue(obj);
 
-        internal static TypePropertyInfo Create(PropertyInfo propInfo, Dictionary<Type, TypeInfo> workingTypes)
+        internal static TypePropertyInfo Create(TypeInfo parentInfo,PropertyInfo propInfo, Dictionary<Type, TypeInfo> workingTypes)
         {
-            var info = new TypePropertyInfo(propInfo);
+            var info = new TypePropertyInfo(parentInfo,propInfo);
             info.ParseAttributes();
             info._propertyTypeInfo = TypeInfo.GetTypeInfo(info._property.PropertyType, workingTypes);
             return info;
