@@ -90,13 +90,18 @@ namespace Net.Reflection
         {
             
             if (!_property.CanWrite) return;
-            if (_setter != null) _setter(obj,value);
-            lock (this)
+            if (_setter == null)
             {
-                if (_setter.IsNull())
-                    _setter = PropertyExpressionBuilder.CreateSetterFunc(this.Raw.DeclaringType, this.Name);
+                lock (this)
+                {
+                    if (_setter.IsNull())
+                        _setter = PropertyExpressionBuilder.CreateSetterFunc(this.Raw.DeclaringType, this.Name);
+                }
             }
-            _setter(obj,value);
+            var changedValue = value.ChangeType(this.Type);
+            if (value != null && changedValue == null) return;
+            if (changedValue.GetType() != this.Type) return;
+            _setter(obj,changedValue);
         }
         public T GetValue<T>(object obj) => (T) this.GetValue(obj);
 

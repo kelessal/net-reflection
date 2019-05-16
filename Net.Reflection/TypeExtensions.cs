@@ -321,7 +321,10 @@ namespace Net.Reflection
 
         public static void SetValue(this object item, string property, object value)
         {
-            item.GetType().GetInfo()[property].SetValue(item, value);
+            var info = item.GetType().GetInfo()[property];
+            if (info.IsNull()) return;
+            info.SetValue(item, value);
+            
         }
         public static T GetValue<T>(this object item, string property)
         {
@@ -343,6 +346,19 @@ namespace Net.Reflection
             if (left == path) return (T)leftValue;
             var right = path.TrimLeftBy(".");
             return leftValue.GetPathValue<T>(right);
+        }
+        public static void SetPathValue(this object item, string path,object value)
+        {
+            if (item == null) return;
+            var left = path.TrimThenBy(".");
+            if (left == path) {
+                item.SetValue(left, value);
+                return;
+            }
+            var leftValue = item.GetValue<object>(left);
+            if (leftValue == null) return;
+            var right = path.TrimLeftBy(".");
+            leftValue.SetPathValue(right,value);
         }
     }
 }

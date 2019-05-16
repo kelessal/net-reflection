@@ -19,5 +19,13 @@ namespace Net.Reflection.Test
             };
             var result= obj.ConvertToDictionary();
         }
+        [Fact]
+        public void SetPathValueTest()
+        {
+            var item= new TestObject();
+            item.NTO = new NestedTestObject();
+            item.SetPathValue("NTO.PropA", 3);
+            
+        }
     }
 }
