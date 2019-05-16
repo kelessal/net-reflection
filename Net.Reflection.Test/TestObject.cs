@@ -11,5 +11,6 @@ namespace Net.Reflection.Test
     class NestedTestObject
     {
         public string PropA { get; set; }
+        public int? Number { get; set; }
     }
 }

@@ -100,7 +100,6 @@ namespace Net.Reflection
             }
             var changedValue = value.ChangeType(this.Type);
             if (value != null && changedValue == null) return;
-            if (changedValue.GetType() != this.Type) return;
             _setter(obj,changedValue);
         }
         public T GetValue<T>(object obj) => (T) this.GetValue(obj);

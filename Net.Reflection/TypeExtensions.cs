@@ -113,6 +113,8 @@ namespace Net.Reflection
         }
         public static object ChangeType(this object item,Type changeType)
         {
+            if (item == null) return item;
+            if (changeType.IsAssignableFrom(item.GetType())) return item;
             try
             {
                 if (changeType.IsEnum)

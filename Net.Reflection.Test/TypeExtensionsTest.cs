@@ -24,7 +24,7 @@ namespace Net.Reflection.Test
         {
             var item= new TestObject();
             item.NTO = new NestedTestObject();
-            item.SetPathValue("NTO.PropA", 3);
+            item.SetPathValue("NTO.Number", 3);
             
         }
     }
