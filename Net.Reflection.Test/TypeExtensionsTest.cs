@@ -23,8 +23,7 @@ namespace Net.Reflection.Test
         public void SetPathValueTest()
         {
             var item= new TestObject();
-            item.NTO = new NestedTestObject();
-            item.SetPathValue("NTO.Number", 3);
+            item.SetPathValue("NTO.Index", -3);
             
         }
     }
