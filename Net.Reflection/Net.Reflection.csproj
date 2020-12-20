@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Net.Extensions" Version="1.0.0" />
+    <PackageReference Include="Net.Extensions" Version="1.2.7" />
   </ItemGroup>
 
 </Project>

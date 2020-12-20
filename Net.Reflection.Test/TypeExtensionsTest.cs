@@ -15,9 +15,11 @@ namespace Net.Reflection.Test
                 {
                     City = "İstanbul",
                     Countr = "Turkey"
-                }
+                },
+                Numbers=new[] {1,2,3}
             };
-            var result= obj.ConvertToDictionary();
+            obj.ConvertToExpando();
+            var result= obj.ConvertToExpando();
         }
         [Fact]
         public void SetPathValueTest()

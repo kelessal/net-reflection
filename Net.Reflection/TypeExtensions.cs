@@ -111,6 +111,7 @@ namespace Net.Reflection
             }
             return null;
         }
+        [Obsolete("This will be removed by 1.2.0 version")]
         public static object ChangeType(this object item,Type changeType)
         {
             if (item == null) return item;
@@ -162,65 +163,7 @@ namespace Net.Reflection
             return type.GetGenericArguments()[0];
         }
 
-        public static Dictionary<string,object> ConvertToDictionary(this object obj,Func<TypePropertyInfo,bool> filter=null)
-        {
-            if (obj == null) return null;
-            var result = new Dictionary<string, object>();
-            Dictionary<string, object> nameValues = new Dictionary<string, object>();
-            if (obj is Dictionary<string, object>)
-                nameValues = obj as Dictionary<string, object>;
-            else
-            {
-                var info = obj.GetType().GetInfo();
-                if (info.Kind != TypeKind.Complex) return null;
-                var props = info.GetAllProperties();
-                if (filter != null)
-                    props.Where(p => filter(p));
-                nameValues = new Dictionary<string, object>();
-                props.Foreach(p=>nameValues.Add(p.Name,p.GetValue(obj)));
-            }
-          
-            foreach (var prop in nameValues)
-            {
-                var name = prop.Key;
-                var value = prop.Value;
-                if (value == null)
-                {
-                    result.Add(name, null);
-                    continue;
-                }
-                var info = value.GetType().GetInfo();
-                if(value is Dictionary<string, object>)
-                {
-                    result.Add(name, value.ConvertToDictionary(filter));
-                }
-                switch (info.Kind)
-                {
-                    case TypeKind.Unknown:
-                    case TypeKind.Primitive:
-                        result.Add(name, value);
-                        continue;
-                    case TypeKind.Complex:
-                        result.Add(name, value.ConvertToDictionary(filter));
-                        continue;
-                    case TypeKind.Collection:
-                        if (info.IsPrimitiveCollection) {
-                            result.Add(name, value);
-                            continue;
-                        }
-                        var list = new List<object>();
-                        foreach(var subValue in value as IEnumerable)
-                        {
-                            list.Add(value.ConvertToDictionary(filter));
-                        }
-                        result.Add(name, list);
-                        continue;
-                }
-            }
-
-            return result;
-        }
-        
+         
         public static MethodInfo FindMethod(this Type type, string methodName, Func<MethodInfo, bool> finder, params Type[] genericParameters)
         {
             if (_genericMethods.ContainsKey(type))
@@ -323,6 +266,11 @@ namespace Net.Reflection
 
         public static void SetValue(this object item, string property, object value)
         {
+            if (item is IDictionary<string, object> dicObject) // For Dynamic Objects
+            {
+                dicObject[property] = value;
+                return;
+            }
             var info = item.GetType().GetInfo()[property];
             if (info.IsNull()) return;
             info.SetValue(item, value);
@@ -330,10 +278,10 @@ namespace Net.Reflection
         }
         public static T GetValue<T>(this object item, string property)
         {
-            if(item is ExpandoObject)
+            if(item is IDictionary<string,object> dicObject) // For Dynamic Objects
             {
-                var expandoItem = (IDictionary<string,object>) item;
-                return expandoItem.ContainsKey(property) ? (T) expandoItem[property]  : default(T);
+                if (!dicObject.ContainsKey(property)) return default(T);
+                return (T) dicObject[property];
             }
             var info = item.GetType().GetInfo();
             if (!info.HasProperty(property)) return default(T);
