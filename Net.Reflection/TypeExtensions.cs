@@ -1,4 +1,5 @@
 ﻿using Net.Extensions;
+using Net.Json;
 using Net.Reflection;
 using System;
 using System.Collections;
@@ -278,14 +279,21 @@ namespace Net.Reflection
         }
         public static T GetValue<T>(this object item, string property)
         {
-            if(item is IDictionary<string,object> dicObject) // For Dynamic Objects
+            object value = null;
+            if (item is IDictionary<string, object> dicObject) // For Dynamic Objects
             {
                 if (!dicObject.ContainsKey(property)) return default(T);
-                return (T) dicObject[property];
+                value = dicObject[property];
             }
-            var info = item.GetType().GetInfo();
-            if (!info.HasProperty(property)) return default(T);
-            return info[property].GetValue<T>(item);
+            else 
+            {
+                var info = item.GetType().GetInfo();
+                if (!info.HasProperty(property)) return default(T);
+                value= info[property].GetValue<T>(item);
+            }
+            if (value == null) return default;
+            if (value is T tvalue) return tvalue;
+            return value.Serialize().Deserialize<T>();
         }
         public static T GetPathValue<T>(this object item, string path)
         {
