@@ -318,5 +318,11 @@ namespace Net.Reflection
             var right = path.TrimLeftBy(".");
             leftValue.SetPathValue(right,value);
         }
+        public static T As<T>(this object item)
+        {
+            if (item.IsNull()) return default;
+            if (item is T titem) return titem;
+            return item.Serialize().Deserialize<T>();
+        }
     }
 }

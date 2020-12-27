@@ -28,5 +28,12 @@ namespace Net.Reflection.Test
             item.SetPathValue("NTO.Index", -3);
             
         }
+        [Fact]
+        public void AsTest()
+        {
+            var item = new { name = "hello", age = "3" };
+            var x=item.As<TestObject>();
+
+        }
     }
 }
