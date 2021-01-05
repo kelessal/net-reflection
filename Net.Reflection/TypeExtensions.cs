@@ -324,5 +324,11 @@ namespace Net.Reflection
             if (item is T titem) return titem;
             return item.Serialize().Deserialize<T>();
         }
+        public static object As(this object item,Type asType)
+        {
+            if (item.IsNull()) return default;
+            if (asType.IsAssignableFrom(item.GetType())) return item;
+            return item.Serialize().Deserialize(asType);
+        }
     }
 }
