@@ -54,8 +54,7 @@ namespace Net.Reflection
         }
         public bool HasProperty(string name) =>
             this._allProperties.ContainsKey(name);
-
-
+        public int PropertySize => this._allProperties.Count;
         private TypeInfo()
         {
 
