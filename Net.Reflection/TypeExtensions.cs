@@ -303,8 +303,7 @@ namespace Net.Reflection
             if (leftValue == null) return default(T);
             if (left == path)
             {
-                if (left is T lt) return lt;
-                return left.As<T>();
+                return leftValue.As<T>();
             }
             var right = path.TrimLeftBy(".");
             return leftValue.GetPathValue<T>(right);
