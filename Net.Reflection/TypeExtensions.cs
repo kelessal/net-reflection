@@ -301,7 +301,11 @@ namespace Net.Reflection
             var left = path.TrimThenBy(".");
             var leftValue = item.GetValue<object>(left);
             if (leftValue == null) return default(T);
-            if (left == path) return (T)leftValue;
+            if (left == path)
+            {
+                if (left is T lt) return lt;
+                return left.As<T>();
+            }
             var right = path.TrimLeftBy(".");
             return leftValue.GetPathValue<T>(right);
         }

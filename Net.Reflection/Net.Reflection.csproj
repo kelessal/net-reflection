@@ -10,11 +10,11 @@
     <PackageProjectUrl>https://github.com/kelessal/net-reflection</PackageProjectUrl>
     <PackageIconUrl>https://github.com/kelessal/net-reflection/blob/master/images/infinity.png</PackageIconUrl>
     <PackageTags>reflection</PackageTags>
-    <Version>1.2.5</Version>
+    <Version>1.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Net.Extensions" Version="1.3.2" />
+    <PackageReference Include="Net.Extensions" Version="1.3.5" />
     <PackageReference Include="Net.Json.Serializer" Version="1.7.3" />
   </ItemGroup>
 
