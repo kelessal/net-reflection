@@ -35,5 +35,12 @@ namespace Net.Reflection.Test
             var x=item.As<TestObject>();
 
         }
+        [Fact]
+        public void CamelCaseTest()
+        {
+            var item = new TestObject();
+            var type=item.GetType().GetInfo();
+            var prop = type.GetPropertyByPath("nto.propA");
+        }
     }
 }

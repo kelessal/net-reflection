@@ -11,10 +11,13 @@ namespace Net.Reflection
         static ConcurrentDictionary<Type, TypeInfo> _objectInfos = new ConcurrentDictionary<Type, TypeInfo>();
 
         public Type Type { get; private set; }
+        public string Name { get; private set; }
+        public string DashedName { get; private set; }
         public TypeKind Kind { get; private set; }
         public TypeInfo ElementTypeInfo { get; private set; }
         public bool IsPrimitiveCollection => this.ElementTypeInfo != null && this.ElementTypeInfo.Kind == TypeKind.Primitive;
         private readonly Dictionary<string, TypePropertyInfo> _allProperties = new Dictionary<string, TypePropertyInfo>();
+        private readonly Dictionary<string, TypePropertyInfo> _camelCaseProperties = new Dictionary<string, TypePropertyInfo>();
 
 
         public TypePropertyInfo GetPropertyByPath(string path)
@@ -48,12 +51,12 @@ namespace Net.Reflection
         {
             get
             {
-                if (!this.HasProperty(propName)) return null;
-                return this._allProperties[propName];
+                return this._allProperties.GetSafeValue(propName) ??
+                    this._camelCaseProperties.GetSafeValue(propName);
             }
         }
         public bool HasProperty(string name) =>
-            this._allProperties.ContainsKey(name);
+            this._allProperties.ContainsKey(name) || this._camelCaseProperties.ContainsKey(name);
         public int PropertySize => this._allProperties.Count;
         private TypeInfo()
         {
@@ -70,6 +73,9 @@ namespace Net.Reflection
                 workingInfos = workingInfos ?? new Dictionary<Type, TypeInfo>();
                 var info = new TypeInfo();
                 info.Type = type;
+                info.Name = type.Name;
+                info.DashedName = type.IsInterface && type.Name.StartsWith("I") ?
+                    type.Name.Substring(1).ToDashCase() : type.Name.ToDashCase();
                 workingInfos.Add(type, info);
                 info.Kind = info.Type.GetTypeKind();
                 if (info.Kind == TypeKind.Complex)
@@ -88,7 +94,9 @@ namespace Net.Reflection
         {
             foreach (var propInfo in this.Type.FindProperties())
             {
-                this._allProperties[propInfo.Name] = TypePropertyInfo.Create(this,propInfo, workingTypes);
+               var prop = TypePropertyInfo.Create(this,propInfo, workingTypes);
+                this._allProperties[propInfo.Name] = prop;
+                this._camelCaseProperties[prop.CamelName] = prop;
             }
         }
 

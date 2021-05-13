@@ -25,10 +25,13 @@ namespace Net.Reflection
         }
         public TypeInfo ElementTypeInfo => this._propertyTypeInfo.ElementTypeInfo;
         public bool IsPrimitiveCollection => this._propertyTypeInfo.IsPrimitiveCollection;
+
         public TypeInfo ParentInfo { get; private set; }
         private TypePropertyInfo(TypeInfo parentInfo,PropertyInfo property)
         {
             this._property = property;
+            this.Name = this._property.Name;
+            this.CamelName = this.Name.ToCamelCase();
             this.ParentInfo = parentInfo;
             
         }
@@ -72,7 +75,9 @@ namespace Net.Reflection
         {
             return this._attributes.Values.SelectMany(p => p);
         }
-        public string Name => this._property.Name;
+        public string Name { get; private set; }
+        public string CamelName { get; private set; }
+
         public PropertyInfo Raw => this._property;
 
         public object GetValue(object obj)
