@@ -19,11 +19,10 @@ namespace Net.Reflection
         private readonly Dictionary<string, TypePropertyInfo> _allProperties = new Dictionary<string, TypePropertyInfo>();
         private readonly Dictionary<string, TypePropertyInfo> _camelCaseProperties = new Dictionary<string, TypePropertyInfo>();
 
-
         public TypePropertyInfo GetPropertyByPath(string path)
         {
             var currentPath = path.TrimThenBy(".");
-            var thenPath = path.TrimLeftBy(".").ToUpperFirstLetter();
+            var thenPath = path.TrimLeftBy(".");
             if (thenPath.IsEmpty() || thenPath == currentPath) return this[currentPath];
             var currentProp = this[currentPath];
             if (currentProp.IsNull()) return null;
