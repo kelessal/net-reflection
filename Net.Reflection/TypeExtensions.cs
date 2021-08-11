@@ -1,6 +1,7 @@
 ﻿using Net.Extensions;
 using Net.Json;
 using Net.Reflection;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -270,11 +271,16 @@ namespace Net.Reflection
             if (item is IDictionary<string, object> dicObject) // For Dynamic Objects
             {
                 dicObject[property] = value;
-                return;
+            } else if(item is IDictionary<string,JToken> tokenDic)
+            {
+                tokenDic[property] =value is JToken tokenValue?tokenValue:JToken.FromObject(value);
+
+            } else
+            {
+                var info = item.GetType().GetInfo()[property];
+                if (info.IsNull()) return;
+                info.SetValue(item, value);
             }
-            var info = item.GetType().GetInfo()[property];
-            if (info.IsNull()) return;
-            info.SetValue(item, value);
             
         }
         public static T GetValue<T>(this object item, string property)
@@ -284,6 +290,11 @@ namespace Net.Reflection
             {
                 if (!dicObject.ContainsKey(property)) return default(T);
                 value = dicObject[property];
+            }
+            else if(item is IDictionary<string,JToken> tokenDic)
+            {
+                if (!tokenDic.ContainsKey(property)) return default(T);
+                value = tokenDic[property];
             }
             else 
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using Xunit;
 
 namespace Net.Reflection.Test
@@ -32,8 +33,17 @@ namespace Net.Reflection.Test
         public void AsTest()
         {
             var item = new { name = "hello", age = "3" };
+
             var x=item.As<TestObject>();
 
+        }
+        [Fact]
+        public void JsonTest()
+        {
+            var item = new { name = "hello", age = "3" };
+
+            var x = item.As<JObject>();
+            var result=x.GetValue<object>("name");
         }
         [Fact]
         public void CamelCaseTest()
