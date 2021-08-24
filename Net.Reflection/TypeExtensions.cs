@@ -113,22 +113,7 @@ namespace Net.Reflection
             }
             return null;
         }
-        [Obsolete("This will be removed by 1.2.0 version")]
-        public static object ChangeType(this object item,Type changeType)
-        {
-            if (item == null) return item;
-            if (changeType.IsAssignableFrom(item.GetType())) return item;
-            try
-            {
-                if (changeType.IsEnum)
-                    return Enum.Parse(changeType, item?.ToString());
-                return Convert.ChangeType(item, changeType);
-            }
-            catch(Exception)
-            {
-                return null;
-            }
-        }
+       
         public static PropertyInfo[] GetPropertyInfos(this Type type, string propName)
         {
             List<PropertyInfo> result = new List<PropertyInfo>();
@@ -283,41 +268,52 @@ namespace Net.Reflection
             }
             
         }
-        public static T GetValue<T>(this object item, string property)
+        public static object GetPropValue(this object item,string property)
         {
             object value = null;
             if (item is IDictionary<string, object> dicObject) // For Dynamic Objects
             {
-                if (!dicObject.ContainsKey(property)) return default(T);
+                if (!dicObject.ContainsKey(property)) return default;
                 value = dicObject[property];
             }
-            else if(item is IDictionary<string,JToken> tokenDic)
+            else if (item is IDictionary<string, JToken> tokenDic)
             {
-                if (!tokenDic.ContainsKey(property)) return default(T);
+                if (!tokenDic.ContainsKey(property)) return default;
                 value = tokenDic[property];
             }
-            else 
+            else
             {
                 var info = item.GetType().GetInfo();
-                if (!info.HasProperty(property)) return default(T);
-                value= info[property].GetValue<T>(item);
+                if (!info.HasProperty(property)) return default;
+                value = info[property].GetValue<object>(item);
             }
+            return value;
+        }
+        public static T GetPropValue<T>(this object item, string property)
+        {
+            var value = item.GetPropValue(property);
             if (value == null) return default;
             if (value is T tvalue) return tvalue;
             return value.Serialize().Deserialize<T>();
         }
         public static T GetPathValue<T>(this object item, string path)
         {
-            if (item == null) return default(T);
+            var value = item.GetPathValue(path);
+            if (value == null) return default;
+            return value.As<T>();
+        }
+        public static object GetPathValue(this object item, string path)
+        {
+            if (item == null) return default;
             var left = path.TrimThenBy(".");
-            var leftValue = item.GetValue<object>(left);
-            if (leftValue == null) return default(T);
+            var leftValue = item.GetPropValue<object>(left);
+            if (leftValue == null) return default;
             if (left == path)
             {
-                return leftValue.As<T>();
+                return leftValue;
             }
             var right = path.TrimLeftBy(".");
-            return leftValue.GetPathValue<T>(right);
+            return leftValue.GetPathValue(right);
         }
         public static void SetPathValue(this object item, string path,object value)
         {
@@ -327,7 +323,7 @@ namespace Net.Reflection
                 item.SetValue(left, value);
                 return;
             }
-            var leftValue = item.GetValue<object>(left);
+            var leftValue = item.GetPropValue<object>(left);
             if (leftValue == null) return;
             var right = path.TrimLeftBy(".");
             leftValue.SetPathValue(right,value);

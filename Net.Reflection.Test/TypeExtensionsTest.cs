@@ -43,7 +43,7 @@ namespace Net.Reflection.Test
             var item = new { name = "hello", age = "3" };
 
             var x = item.As<JObject>();
-            var result=x.GetValue<object>("name");
+            var result=x.GetPropValue("name");
         }
         [Fact]
         public void CamelCaseTest()

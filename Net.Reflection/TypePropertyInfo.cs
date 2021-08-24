@@ -103,12 +103,11 @@ namespace Net.Reflection
                         _setter = PropertyExpressionBuilder.CreateSetterFunc(this.Raw.DeclaringType, this.Name);
                 }
             }
-            var changedValue = value.ChangeType(this.Type);
+            var changedValue = value.As(this.Type);
             if (value != null && changedValue == null) return;
             _setter(obj,changedValue);
         }
         public T GetValue<T>(object obj) => (T) this.GetValue(obj);
-
         internal static TypePropertyInfo Create(TypeInfo parentInfo,PropertyInfo propInfo, Dictionary<Type, TypeInfo> workingTypes)
         {
             var info = new TypePropertyInfo(parentInfo,propInfo);
