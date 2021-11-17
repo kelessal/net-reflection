@@ -15,6 +15,10 @@ namespace Net.Reflection
         public string DashedName { get; private set; }
         public TypeKind Kind { get; private set; }
         public TypeInfo ElementTypeInfo { get; private set; }
+
+        private readonly HashSet<Type> BaseInterfaces = new HashSet<Type>();
+        public IEnumerable<Type> GetBaseInterfaces() => this.BaseInterfaces.AsEnumerable();
+        public bool ContainsBaseInterface(Type type) => this.BaseInterfaces.Contains(type);
         public bool IsPrimitiveCollection => this.ElementTypeInfo != null && this.ElementTypeInfo.Kind == TypeKind.Primitive;
         private readonly Dictionary<string, TypePropertyInfo> _allProperties = new Dictionary<string, TypePropertyInfo>();
         private readonly Dictionary<string, TypePropertyInfo> _camelCaseProperties = new Dictionary<string, TypePropertyInfo>();
@@ -82,6 +86,16 @@ namespace Net.Reflection
                 else if (info.Kind == TypeKind.Collection)
                     info.ElementTypeInfo = GetTypeInfo(info.Type.GetCollectionElementType(), workingInfos);
                 _objectInfos[type] = info;
+                void IncludeInterfaces(Type currentType)
+                {
+                    foreach (var subType in currentType.GetInterfaces())
+                    {
+                        if (info.BaseInterfaces.Contains(subType)) continue;
+                        info.BaseInterfaces.Add(subType);
+                        IncludeInterfaces(subType);
+                    }
+                }
+                IncludeInterfaces(type);
                 return info;
             }
 
