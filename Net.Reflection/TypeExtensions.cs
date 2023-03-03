@@ -75,46 +75,7 @@ namespace Net.Reflection
             else
                 return type.Name;
         }
-        public static bool IsLogicalEqual(this object obj1,object obj2)
-        {
-            if (obj1 == null && obj2 == null) return true;
-            if (obj1 == null || obj2 == null) return false;
-            var info1 = obj1.GetType().GetInfo();
-            var info2 = obj2.GetType().GetInfo();
-            if (info1.Kind != info2.Kind) return false;
-            if (info1.Kind == TypeKind.Unknown || info1.Kind == TypeKind.Primitive)
-                return obj1.Equals(obj2);
-            if (info1.Kind == TypeKind.Complex)
-            {
-                var anyDiff = info1.GetAllProperties()
-                     .Where(p => info2.HasProperty(p.Name))
-                     .Any(p => !p.GetValue(obj1).IsLogicalEqual(info2[p.Name].GetValue(obj2)));
-                return !anyDiff;
-            }
-            // IEnumerable ise
-            var values1 = new List<object>();
-            var values2 = new List<object>();
-            foreach (var item in obj1 as IEnumerable)
-                values1.Add(item);
-            foreach (var item in obj2 as IEnumerable)
-                values2.Add(item);
-
-            if (values1.Count != values2.Count) return false;
-            for (int i = 0; i < values1.Count; i++)
-                if (!values1[i].IsLogicalEqual(values2[i]))
-                    return false;
-            return true;
-        }
-        public static object GetDefault(Type type)
-        {
-            if (type.IsValueType)
-            {
-                return Activator.CreateInstance(type);
-            }
-            return null;
-        }
        
-
         public static PropertyInfo[] GetPropertyInfos(this Type type, string propName)
         {
             List<PropertyInfo> result = new List<PropertyInfo>();

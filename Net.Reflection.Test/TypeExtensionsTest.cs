@@ -7,6 +7,31 @@ namespace Net.Reflection.Test
     public class TypeExtensionsTest
     {
         [Fact]
+        public void LogicalEqualTest()
+        {
+            var obj1 = new
+            {
+                Name = "hello",
+                Address = new
+                {
+                    City = "İstanbul",
+                    Countr = "Turkey"
+                },
+                Numbers =(int[]) null
+            };
+            var obj2 = new
+            {
+                Name = "hello",
+                Address = new
+                {
+                    City = "İstanbul",
+                    Countr = "Turkey"
+                },
+                Numbers = new[] { 1, 2, 3 }
+            };
+        }
+
+        [Fact]
         public void ConvertToDictionaryTest()
         {
             var obj = new
