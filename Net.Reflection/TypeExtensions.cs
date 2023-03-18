@@ -296,6 +296,11 @@ namespace Net.Reflection
             if (item is T titem) return titem;
             return item.Serialize().Deserialize<T>();
         }
+        public static T AsCloned<T>(this object item)
+        {
+            if(item.IsNull()) return default;
+            return item.Serialize().Deserialize<T>();
+        }
         public static object As(this object item,Type asType)
         {
             if (item.IsNull()) return default;
