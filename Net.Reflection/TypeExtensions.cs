@@ -1,5 +1,6 @@
 ﻿using Net.Extensions;
 using Net.Json;
+using Net.Proxy;
 using Net.Reflection;
 using Newtonsoft.Json.Linq;
 using System;
@@ -300,6 +301,19 @@ namespace Net.Reflection
         {
             if(item.IsNull()) return default;
             return item.Serialize().Deserialize<T>();
+        }
+        public static object AsCloned(this object item,Type type=default)
+        {
+            if (item.IsNull()) return default;
+            if (type == null)
+            {
+                if (item is IProxyData)
+                    type = InterfaceType.GetIntefaceTypeOfProxy(item);
+                else
+                    type=item.GetType();
+            }
+
+            return item.Serialize().Deserialize(type);
         }
         public static object As(this object item,Type asType)
         {
